@@ -458,7 +458,7 @@ export default function Profile() {
 
             <div className="bg-white p-4 rounded-2xl border-2 border-gray-200 mb-4">
               <img
-                src={qrCode}
+                src={`http://api.qrserver.com/v1/create-qr-code/?data=${qrCode}`}
                 alt="Patient QR Code"
                 className="w-full max-w-xs mx-auto"
               />
