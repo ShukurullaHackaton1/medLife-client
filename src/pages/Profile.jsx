@@ -16,6 +16,8 @@ import {
   FaSignOutAlt,
   FaGlobe,
   FaQrcode,
+  FaChartLine,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 
 export default function Profile() {
@@ -226,16 +228,39 @@ export default function Profile() {
 
         {profile?.hasDiabetes && (
           <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-4 border-2 border-primary-200">
-            <p className="text-lg font-bold text-primary-900 mb-2">
-              📊 Diabet kundaligi faol
-            </p>
-            <p className="text-gray-700">
-              Siz barcha funktsiyalardan foydalanishingiz mumkin
-            </p>
+            <div className="flex items-start gap-3">
+              <FaChartLine className="text-primary-600 text-2xl mt-1" />
+              <div>
+                <p className="text-lg font-bold text-primary-900 mb-2">
+                  Diabet kundaligi faol
+                </p>
+                <p className="text-gray-700">
+                  Siz barcha funktsiyalardan foydalanishingiz mumkin
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {profile?.screeningResults && profile.screeningResults.length > 0 && (
+          <div className="bg-gradient-to-br from-warning-50 to-warning-100 rounded-2xl p-4 border-2 border-warning-200">
+            <div className="flex items-start gap-3">
+              <FaExclamationTriangle className="text-warning-600 text-2xl mt-1" />
+              <div>
+                <p className="text-lg font-bold text-warning-900 mb-2">
+                  Skrining natijalari mavjud
+                </p>
+                <p className="text-gray-700">
+                  Siz {profile.screeningResults.length} ta kasallik xavfi haqida
+                  ogohlantirildingiz
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">
@@ -342,6 +367,7 @@ export default function Profile() {
         </div>
       )}
 
+      {/* Language Modal */}
       {showLanguageModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">
@@ -401,6 +427,7 @@ export default function Profile() {
         </div>
       )}
 
+      {/* Notifications Modal */}
       {showNotifications && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -449,6 +476,7 @@ export default function Profile() {
         </div>
       )}
 
+      {/* QR Modal */}
       {showQRModal && qrCode && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">

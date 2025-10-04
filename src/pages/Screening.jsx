@@ -5,6 +5,12 @@ import {
   useGetScreeningQuestionsQuery,
   useSubmitScreeningMutation,
 } from "../services/api";
+import {
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaChartLine,
+  FaHeartbeat,
+} from "react-icons/fa";
 
 export default function Screening() {
   const { t } = useTranslation();
@@ -58,8 +64,11 @@ export default function Screening() {
 
             {results.results.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-xl text-success-600 mb-4">
-                  ✅ Sizda kasallik xavfi aniqlanmadi
+                <div className="bg-success-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaCheckCircle className="text-success-600 text-6xl" />
+                </div>
+                <p className="text-xl text-success-600 mb-4 font-semibold">
+                  Sizda kasallik xavfi aniqlanmadi
                 </p>
                 <p className="text-gray-600">
                   Sog'lom turmush tarzini davom ettiring
@@ -76,7 +85,18 @@ export default function Screening() {
                         : "bg-warning-50 border-warning-300"
                     }`}
                   >
-                    <h3 className="text-xl font-bold mb-2">{result.disease}</h3>
+                    <div className="flex items-start gap-3 mb-3">
+                      <FaExclamationTriangle
+                        className={`text-2xl mt-1 ${
+                          result.risk === "Yuqori"
+                            ? "text-danger-600"
+                            : "text-warning-600"
+                        }`}
+                      />
+                      <h3 className="text-xl font-bold flex-1">
+                        {result.disease}
+                      </h3>
+                    </div>
                     <p className="text-lg mb-2">
                       <strong>Xavf darajasi:</strong> {result.risk}
                     </p>
@@ -91,13 +111,35 @@ export default function Screening() {
 
             {results.hasDiabetes && (
               <div className="mt-6 p-4 bg-primary-50 rounded-2xl border-2 border-primary-300">
-                <p className="text-lg font-semibold text-primary-900">
-                  📊 Diabet kundaligi ochildi
-                </p>
-                <p className="text-gray-700 mt-2">
-                  Endi siz glukometr, ovqatlanish va boshqa ma'lumotlarni
-                  kiritishingiz mumkin
-                </p>
+                <div className="flex items-start gap-3">
+                  <FaChartLine className="text-primary-600 text-2xl mt-1" />
+                  <div>
+                    <p className="text-lg font-semibold text-primary-900">
+                      Diabet kundaligi ochildi
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Endi siz glukometr, ovqatlanish va boshqa ma'lumotlarni
+                      kiritishingiz mumkin
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!results.hasDiabetes && (
+              <div className="mt-6 p-4 bg-success-50 rounded-2xl border-2 border-success-300">
+                <div className="flex items-start gap-3">
+                  <FaHeartbeat className="text-success-600 text-2xl mt-1" />
+                  <div>
+                    <p className="text-lg font-semibold text-success-900">
+                      Sog'ligingizni saqlang
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      AI chat orqali tibbiy maslahat olishingiz va oila
+                      a'zolaringizni kuzatishingiz mumkin
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 

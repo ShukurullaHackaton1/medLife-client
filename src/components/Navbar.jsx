@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
+import { useGetProfileQuery } from "../services/api";
 import {
   FaHome,
   FaTint,
@@ -8,14 +9,18 @@ import {
   FaPills,
   FaUtensils,
   FaUser,
+  FaComments,
+  FaUsers,
 } from "react-icons/fa";
 
 export default function Navbar() {
   const { t } = useTranslation();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
+  const { data: profile } = useGetProfileQuery();
 
-  const navItems = [
+  // Barcha navItems
+  const allNavItems = [
     {
       path: "/",
       icon: FaHome,
@@ -23,6 +28,7 @@ export default function Navbar() {
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-50",
       textColor: "text-blue-600",
+      forDiabetes: false, // Hammaga ko'rinadi
     },
     {
       path: "/glucometer",
@@ -31,6 +37,7 @@ export default function Navbar() {
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
       textColor: "text-red-600",
+      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/physical",
@@ -39,6 +46,7 @@ export default function Navbar() {
       color: "from-green-500 to-green-600",
       bgColor: "bg-green-50",
       textColor: "text-green-600",
+      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/medication",
@@ -47,6 +55,7 @@ export default function Navbar() {
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-50",
       textColor: "text-purple-600",
+      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/nutrition",
@@ -55,6 +64,25 @@ export default function Navbar() {
       color: "from-orange-500 to-orange-600",
       bgColor: "bg-orange-50",
       textColor: "text-orange-600",
+      forDiabetes: true, // Faqat diabetiklar uchun
+    },
+    {
+      path: "/chat",
+      icon: FaComments,
+      label: t("chat"),
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+      textColor: "text-purple-600",
+      forDiabetes: false, // Hammaga ko'rinadi
+    },
+    {
+      path: "/family",
+      icon: FaUsers,
+      label: t("family"),
+      color: "from-pink-500 to-pink-600",
+      bgColor: "bg-pink-50",
+      textColor: "text-pink-600",
+      forDiabetes: false, // Hammaga ko'rinadi
     },
     {
       path: "/profile",
@@ -63,8 +91,14 @@ export default function Navbar() {
       color: "from-gray-500 to-gray-600",
       bgColor: "bg-gray-50",
       textColor: "text-gray-600",
+      forDiabetes: false, // Hammaga ko'rinadi
     },
   ];
+
+  // Foydalanuvchi diabetga chalingan yoki chalinmaganligiga qarab navItems filtrlash
+  const navItems = profile?.hasDiabetes
+    ? allNavItems
+    : allNavItems.filter((item) => !item.forDiabetes);
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(
@@ -73,7 +107,7 @@ export default function Navbar() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
-  }, [location.pathname]);
+  }, [location.pathname, navItems]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
@@ -82,7 +116,7 @@ export default function Navbar() {
 
       {/* Active indicator line */}
       <div
-        className={`absolute top-0 h-0.5 bg-gradient-to-r ${navItems[activeIndex].color} transition-all duration-300 ease-out`}
+        className={`absolute top-0 h-0.5 bg-gradient-to-r ${navItems[activeIndex]?.color} transition-all duration-300 ease-out`}
         style={{
           width: `${100 / navItems.length}%`,
           left: `${(activeIndex * 100) / navItems.length}%`,
