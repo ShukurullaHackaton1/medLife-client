@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { useGetProfileQuery } from "../services/api";
 import {
   FaHome,
   FaTint,
@@ -9,96 +8,57 @@ import {
   FaPills,
   FaUtensils,
   FaUser,
-  FaComments,
-  FaUsers,
 } from "react-icons/fa";
 
 export default function Navbar() {
   const { t } = useTranslation();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
-  const { data: profile } = useGetProfileQuery();
 
-  // Barcha navItems
-  const allNavItems = [
+  const navItems = [
     {
       path: "/",
       icon: FaHome,
-      label: t("home"),
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-50",
       textColor: "text-blue-600",
-      forDiabetes: false, // Hammaga ko'rinadi
     },
     {
       path: "/glucometer",
       icon: FaTint,
-      label: t("glucometer"),
       color: "from-red-500 to-red-600",
       bgColor: "bg-red-50",
       textColor: "text-red-600",
-      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/physical",
       icon: FaRunning,
-      label: t("physical"),
       color: "from-green-500 to-green-600",
       bgColor: "bg-green-50",
       textColor: "text-green-600",
-      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/medication",
       icon: FaPills,
-      label: t("medication"),
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-50",
       textColor: "text-purple-600",
-      forDiabetes: true, // Faqat diabetiklar uchun
     },
     {
       path: "/nutrition",
       icon: FaUtensils,
-      label: t("nutrition"),
       color: "from-orange-500 to-orange-600",
       bgColor: "bg-orange-50",
       textColor: "text-orange-600",
-      forDiabetes: true, // Faqat diabetiklar uchun
-    },
-    {
-      path: "/chat",
-      icon: FaComments,
-      label: t("chat"),
-      color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-50",
-      textColor: "text-purple-600",
-      forDiabetes: false, // Hammaga ko'rinadi
-    },
-    {
-      path: "/family",
-      icon: FaUsers,
-      label: t("family"),
-      color: "from-pink-500 to-pink-600",
-      bgColor: "bg-pink-50",
-      textColor: "text-pink-600",
-      forDiabetes: false, // Hammaga ko'rinadi
     },
     {
       path: "/profile",
       icon: FaUser,
-      label: t("profile"),
       color: "from-gray-500 to-gray-600",
       bgColor: "bg-gray-50",
       textColor: "text-gray-600",
-      forDiabetes: false, // Hammaga ko'rinadi
     },
   ];
-
-  // Foydalanuvchi diabetga chalingan yoki chalinmaganligiga qarab navItems filtrlash
-  const navItems = profile?.hasDiabetes
-    ? allNavItems
-    : allNavItems.filter((item) => !item.forDiabetes);
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(
@@ -107,7 +67,7 @@ export default function Navbar() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
-  }, [location.pathname, navItems]);
+  }, [location.pathname]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
@@ -116,7 +76,7 @@ export default function Navbar() {
 
       {/* Active indicator line */}
       <div
-        className={`absolute top-0 h-0.5 bg-gradient-to-r ${navItems[activeIndex]?.color} transition-all duration-300 ease-out`}
+        className={`absolute top-0 h-0.5 bg-gradient-to-r ${navItems[activeIndex].color} transition-all duration-300 ease-out`}
         style={{
           width: `${100 / navItems.length}%`,
           left: `${(activeIndex * 100) / navItems.length}%`,
@@ -162,17 +122,6 @@ export default function Navbar() {
                     }`}
                   />
                 </div>
-
-                {/* Label */}
-                <span
-                  className={`relative z-10 text-xs sm:text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? `${item.textColor} font-semibold`
-                      : "text-gray-500 group-hover:text-gray-700"
-                  }`}
-                >
-                  {item.label}
-                </span>
 
                 {/* Active dot indicator */}
                 {isActive && (
