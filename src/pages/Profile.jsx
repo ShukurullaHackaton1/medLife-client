@@ -94,7 +94,7 @@ export default function Profile() {
     if (profile) {
       try {
         setQRCode(
-          `https://med-life-client.vercel.app/doctor/patient/68e0fd7b5d7dffcf3baaefe6`
+          `https://med-life-client.vercel.app/doctor/patient/${profile._id}`
         );
         setShowQRModal(true);
       } catch (error) {
