@@ -93,9 +93,9 @@ export default function Profile() {
   const generateQR = async () => {
     if (profile) {
       try {
-        const response = await fetch(`/api/doctor/patient-qr/${profile._id}`);
-        const data = await response.json();
-        setQRCode(data.qrCode);
+        setQRCode(
+          `https://med-life-client.vercel.app/doctor/patient/68e0fd7b5d7dffcf3baaefe6`
+        );
         setShowQRModal(true);
       } catch (error) {
         alert("QR kod yaratishda xatolik");
