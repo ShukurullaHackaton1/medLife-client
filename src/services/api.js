@@ -204,6 +204,9 @@ export const api = createApi({
     getPatientData: builder.query({
       query: (userId) => `/doctor/patient/${userId}`,
     }),
+    getFamilyMember: builder.query({
+      query: (id) => `/family/member/${id}`,
+    }),
   }),
 });
 
