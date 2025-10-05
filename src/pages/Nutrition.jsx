@@ -1,3 +1,4 @@
+// src/pages/Nutrition.jsx - Yangilangan versiya
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -6,14 +7,16 @@ import {
   useGetNutritionQuery,
 } from "../services/api";
 import Navbar from "../components/Navbar";
-import { FaCamera, FaPlus, FaTrash, FaCheck } from "react-icons/fa";
+import { FaCamera, FaPlus, FaTrash, FaCheck, FaImage } from "react-icons/fa";
 
 export default function Nutrition() {
   const { t } = useTranslation();
   const [mealType, setMealType] = useState("breakfast");
   const [foods, setFoods] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showCameraOptions, setShowCameraOptions] = useState(false);
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
 
   const { data: nutritionHistory } = useGetNutritionQuery({
     period: "daily",
@@ -28,6 +31,7 @@ export default function Nutrition() {
     if (!file) return;
 
     setIsAnalyzing(true);
+    setShowCameraOptions(false);
 
     const reader = new FileReader();
     reader.onloadend = async () => {
@@ -185,8 +189,48 @@ export default function Nutrition() {
           </div>
         )}
 
+        {/* Camera Options */}
+        {showCameraOptions && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-3xl p-6 w-full max-w-md">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+                Выберите источник
+              </h2>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    cameraInputRef.current?.click();
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
+                >
+                  <FaCamera className="text-2xl" />
+                  Сделать фото
+                </button>
+
+                <button
+                  onClick={() => {
+                    fileInputRef.current?.click();
+                  }}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white text-lg font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
+                >
+                  <FaImage className="text-2xl" />
+                  Выбрать из галереи
+                </button>
+
+                <button
+                  onClick={() => setShowCameraOptions(false)}
+                  className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 text-lg font-semibold py-4 rounded-xl transition-colors"
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <button
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => setShowCameraOptions(true)}
           disabled={isAnalyzing}
           className="w-full bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow border-2 border-dashed border-warning-300 flex flex-col items-center justify-center gap-3 disabled:opacity-50"
         >
@@ -205,8 +249,9 @@ export default function Nutrition() {
           </p>
         </button>
 
+        {/* Hidden inputs */}
         <input
-          ref={fileInputRef}
+          ref={cameraInputRef}
           type="file"
           accept="image/*"
           capture="environment"
@@ -214,6 +259,15 @@ export default function Nutrition() {
           className="hidden"
         />
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageCapture}
+          className="hidden"
+        />
+
+        {/* Existing nutrition history code... */}
         {nutritionHistory && nutritionHistory.length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">

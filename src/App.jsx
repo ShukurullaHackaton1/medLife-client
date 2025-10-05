@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 import Family from "./pages/Family";
 import DoctorPatient from "./pages/DoctorPatient";
+import DoctorDashboard from "./pages/DoctorDashboard";
 
 function App() {
   const { token } = useSelector((state) => state.auth);
@@ -63,6 +64,10 @@ function App() {
           element={token ? <Family /> : <Navigate to="/login" />}
         />
         <Route path="/doctor/patient/:userId" element={<DoctorPatient />} />
+
+        {/* Doctor Dashboard */}
+        <Route path="/doctor-side" element={<DoctorDashboard />} />
+
         <Route path="*" element={<Navigate to={token ? "/" : "/language"} />} />
       </Routes>
     </BrowserRouter>
