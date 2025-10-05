@@ -10,6 +10,10 @@ import {
   FaComments,
   FaUsers,
   FaBell,
+  FaRobot,
+  FaUserFriends,
+  FaHeartbeat,
+  FaChartLine,
 } from "react-icons/fa";
 
 export default function Home() {
@@ -19,51 +23,58 @@ export default function Home() {
 
   const unreadNotifications = notifications?.filter((n) => !n.read).length || 0;
 
-  const quickActions = [
-    {
-      path: "/glucometer",
-      icon: FaTint,
-      label: t("glucometer"),
-      color: "bg-danger-500",
-    },
-    {
-      path: "/physical",
-      icon: FaRunning,
-      label: t("physical"),
-      color: "bg-success-500",
-    },
-    {
-      path: "/medication",
-      icon: FaPills,
-      label: t("medication"),
-      color: "bg-primary-500",
-    },
-    {
-      path: "/nutrition",
-      icon: FaUtensils,
-      label: t("nutrition"),
-      color: "bg-warning-500",
-    },
+  const baseActions = [
     {
       path: "/chat",
       icon: FaComments,
-      label: t("chat"),
+      label: "AI Chat",
       color: "bg-purple-500",
     },
     {
       path: "/family",
       icon: FaUsers,
-      label: t("family"),
+      label: "Oila",
       color: "bg-pink-500",
     },
   ];
+
+  const diabetesActions = [
+    {
+      path: "/glucometer",
+      icon: FaTint,
+      label: "Glukometr",
+      color: "bg-danger-500",
+    },
+    {
+      path: "/physical",
+      icon: FaRunning,
+      label: "Jismoniy faollik",
+      color: "bg-success-500",
+    },
+    {
+      path: "/medication",
+      icon: FaPills,
+      label: "Dorilar",
+      color: "bg-primary-500",
+    },
+    {
+      path: "/nutrition",
+      icon: FaUtensils,
+      label: "Ovqatlanish",
+      color: "bg-warning-500",
+    },
+  ];
+
+  const quickActions = profile?.hasDiabetes
+    ? [...diabetesActions, ...baseActions]
+    : baseActions;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white p-6 rounded-b-3xl">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-3xl font-bold mb-1">{t("welcome")}</h1>
+            <h1 className="text-3xl font-bold mb-1">Xush kelibsiz</h1>
             <p className="text-xl opacity-90">
               {profile?.firstName} {profile?.lastName}
             </p>
@@ -79,12 +90,29 @@ export default function Home() {
           </Link>
         </div>
 
-        {profile?.hasDiabetes && (
+        {profile?.hasDiabetes ? (
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mt-4">
-            <p className="text-lg font-semibold">📊 Diabet kundaligi</p>
-            <p className="text-sm opacity-90 mt-1">
-              Kunlik ma'lumotlaringizni kuzatib boring
-            </p>
+            <div className="flex items-center gap-3">
+              <FaChartLine className="text-2xl" />
+              <div>
+                <p className="text-lg font-semibold">Diabet kundaligi</p>
+                <p className="text-sm opacity-90 mt-1">
+                  Kunlik ma'lumotlaringizni kuzatib boring
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 mt-4">
+            <div className="flex items-center gap-3">
+              <FaHeartbeat className="text-2xl" />
+              <div>
+                <p className="text-lg font-semibold">Sog'lom turmush tarzi</p>
+                <p className="text-sm opacity-90 mt-1">
+                  AI chat orqali tibbiy maslahat oling va oilangizni kuzating
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -92,7 +120,13 @@ export default function Home() {
       <div className="p-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Tezkor kirish</h2>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div
+          className={`grid ${
+            profile?.hasDiabetes
+              ? "grid-cols-2"
+              : "grid-cols-1 max-w-md mx-auto"
+          } gap-4`}
+        >
           {quickActions.map((action) => {
             const Icon = action.icon;
             return (
@@ -102,17 +136,51 @@ export default function Home() {
                 className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow"
               >
                 <div
-                  className={`${action.color} w-14 h-14 rounded-xl flex items-center justify-center mb-3`}
+                  className={
+                    profile?.hasDiabetes ? "" : "flex items-center gap-4"
+                  }
                 >
-                  <Icon className="text-white text-2xl" />
+                  <div
+                    className={`${action.color} ${
+                      profile?.hasDiabetes ? "w-14 h-14 mb-3" : "w-14 h-14"
+                    } rounded-xl flex items-center justify-center flex-shrink-0`}
+                  >
+                    <Icon className="text-white text-2xl" />
+                  </div>
+                  <p className="text-lg font-semibold text-gray-800">
+                    {action.label}
+                  </p>
                 </div>
-                <p className="text-lg font-semibold text-gray-800">
-                  {action.label}
-                </p>
               </Link>
             );
           })}
         </div>
+
+        {!profile?.hasDiabetes && (
+          <div className="mt-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
+            <h3 className="text-xl font-bold text-blue-900 mb-3 flex items-center gap-2">
+              <FaHeartbeat className="text-2xl" />
+              Sog'ligingizni kuzatib boring
+            </h3>
+            <p className="text-gray-700 mb-4">
+              AI chat orqali semptomlaringiz haqida savol bering va professional
+              maslahat oling. Oila a'zolaringizni qo'shib, ularning sog'lig'ini
+              ham kuzatishingiz mumkin.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-xl p-4 text-center">
+                <FaRobot className="text-4xl text-purple-600 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-gray-800">AI Chat</p>
+                <p className="text-xs text-gray-600">Tibbiy maslahat</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 text-center">
+                <FaUserFriends className="text-4xl text-pink-600 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-gray-800">Oila</p>
+                <p className="text-xs text-gray-600">Kuzatuv tizimi</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {profile?.screeningResults && profile.screeningResults.length > 0 && (
           <div className="mt-6">

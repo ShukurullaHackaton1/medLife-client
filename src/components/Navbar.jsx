@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
+import { useGetProfileQuery } from "../services/api";
 import {
   FaHome,
   FaTint,
@@ -8,6 +9,7 @@ import {
   FaPills,
   FaUtensils,
   FaUser,
+  FaComments,
 } from "react-icons/fa";
 
 export default function Navbar() {
@@ -15,7 +17,10 @@ export default function Navbar() {
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const navItems = [
+  const { data: profile } = useGetProfileQuery();
+  const hasDiabetes = profile?.hasDiabetes || false;
+
+  const baseNavItems = [
     {
       path: "/",
       icon: FaHome,
@@ -23,6 +28,23 @@ export default function Navbar() {
       bgColor: "bg-blue-50",
       textColor: "text-blue-600",
     },
+    {
+      path: "/chat",
+      icon: FaComments,
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+      textColor: "text-purple-600",
+    },
+    {
+      path: "/profile",
+      icon: FaUser,
+      color: "from-gray-500 to-gray-600",
+      bgColor: "bg-gray-50",
+      textColor: "text-gray-600",
+    },
+  ];
+
+  const diabetesNavItems = [
     {
       path: "/glucometer",
       icon: FaTint,
@@ -51,14 +73,11 @@ export default function Navbar() {
       bgColor: "bg-orange-50",
       textColor: "text-orange-600",
     },
-    {
-      path: "/profile",
-      icon: FaUser,
-      color: "from-gray-500 to-gray-600",
-      bgColor: "bg-gray-50",
-      textColor: "text-gray-600",
-    },
   ];
+
+  const navItems = hasDiabetes
+    ? [baseNavItems[0], ...diabetesNavItems, baseNavItems[1], baseNavItems[2]]
+    : baseNavItems;
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(
@@ -67,16 +86,16 @@ export default function Navbar() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
-  }, [location.pathname]);
+  }, [location.pathname, navItems.length]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Background with blur effect */}
       <div className="absolute inset-0 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-2xl"></div>
 
-      {/* Active indicator line */}
       <div
-        className={`absolute top-0 h-0.5 bg-gradient-to-r ${navItems[activeIndex].color} transition-all duration-300 ease-out`}
+        className={`absolute top-0 h-0.5 bg-gradient-to-r ${
+          navItems[activeIndex]?.color || "from-blue-500 to-blue-600"
+        } transition-all duration-300 ease-out`}
         style={{
           width: `${100 / navItems.length}%`,
           left: `${(activeIndex * 100) / navItems.length}%`,
@@ -95,18 +114,14 @@ export default function Navbar() {
                 to={item.path}
                 className="flex flex-col items-center justify-center flex-1 h-full group relative"
               >
-                {/* Active background circle */}
                 {isActive && (
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center`}
-                  >
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <div
                       className={`w-12 h-12 sm:w-14 sm:h-14 ${item.bgColor} rounded-2xl transform scale-100 transition-transform duration-200`}
                     ></div>
                   </div>
                 )}
 
-                {/* Icon container */}
                 <div
                   className={`relative z-10 transition-all duration-200 ${
                     isActive
@@ -123,7 +138,6 @@ export default function Navbar() {
                   />
                 </div>
 
-                {/* Active dot indicator */}
                 {isActive && (
                   <div className="absolute bottom-1 w-1 h-1 bg-current rounded-full animate-pulse"></div>
                 )}

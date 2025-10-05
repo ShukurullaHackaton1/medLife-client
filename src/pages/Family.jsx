@@ -5,7 +5,13 @@ import {
   useGetFamilyMembersQuery,
 } from "../services/api";
 import Navbar from "../components/Navbar";
-import { FaQrcode, FaLink, FaUsers, FaChevronRight } from "react-icons/fa";
+import {
+  FaQrcode,
+  FaLink,
+  FaUsers,
+  FaChevronRight,
+  FaExclamationCircle,
+} from "react-icons/fa";
 
 export default function Family() {
   const { t } = useTranslation();
@@ -14,7 +20,12 @@ export default function Family() {
   const { data: inviteData } = useGetInviteLinkQuery(undefined, {
     skip: !showInviteModal,
   });
-  const { data: familyData, isLoading } = useGetFamilyMembersQuery();
+  const {
+    data: familyData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetFamilyMembersQuery();
 
   const copyToClipboard = () => {
     if (inviteData?.inviteUrl) {
@@ -36,18 +47,43 @@ export default function Family() {
           className="w-full bg-white text-pink-600 font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 hover:bg-pink-50 transition-colors"
         >
           <FaQrcode className="text-xl" />
-          {t("inviteFamily")}
+          Oila a'zosini qo'shish
         </button>
       </div>
 
       <div className="p-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          {t("familyMembers")}
-        </h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">Oila a'zolari</h2>
+          <button
+            onClick={() => refetch()}
+            className="text-primary-600 font-medium text-sm"
+          >
+            🔄 Yangilash
+          </button>
+        </div>
 
         {isLoading ? (
-          <p className="text-center py-8">{t("loading")}</p>
-        ) : familyData && familyData.members.length > 0 ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Yuklanmoqda...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <FaExclamationCircle className="text-5xl text-danger-600 mx-auto mb-4" />
+            <p className="text-xl text-danger-600 mb-2">Xatolik yuz berdi</p>
+            <p className="text-gray-600 mb-4">
+              {error?.data?.message || "Ma'lumotlarni yuklab bo'lmadi"}
+            </p>
+            <button
+              onClick={() => refetch()}
+              className="bg-pink-600 text-white px-6 py-2 rounded-xl"
+            >
+              Qayta urinish
+            </button>
+          </div>
+        ) : familyData &&
+          familyData.members &&
+          familyData.members.length > 0 ? (
           <div className="space-y-3">
             {familyData.members.map((member) => (
               <div
@@ -56,7 +92,7 @@ export default function Family() {
               >
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center text-white text-2xl font-bold">
-                    {member.firstName.charAt(0)}
+                    {member.firstName?.charAt(0) || "?"}
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">
@@ -80,6 +116,7 @@ export default function Family() {
           </div>
         ) : (
           <div className="text-center py-12">
+            <FaUsers className="text-6xl text-gray-400 mx-auto mb-4" />
             <p className="text-xl text-gray-500 mb-4">
               Hozircha oila a'zolari yo'q
             </p>
@@ -126,7 +163,7 @@ export default function Family() {
                 onClick={copyToClipboard}
                 className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 whitespace-nowrap"
               >
-                <FaLink /> Nusxalash
+                <FaLink /> Nusxa
               </button>
             </div>
 
