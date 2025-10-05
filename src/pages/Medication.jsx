@@ -23,7 +23,6 @@ import {
   FaBellSlash,
   FaTrash,
   FaTimes,
-  FaEdit,
   FaPills,
 } from "react-icons/fa";
 
@@ -96,7 +95,7 @@ export default function Medication() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Dorini o'chirmoqchimisiz?")) {
+    if (confirm(t("confirmLogout"))) {
       try {
         await deleteMedication(id).unwrap();
       } catch (error) {
@@ -130,8 +129,8 @@ export default function Medication() {
 
   const pieData = chartData
     ? [
-        { name: "Qabul qilingan", value: chartData.taken },
-        { name: "Qoldirilgan", value: chartData.missed },
+        { name: t("takenCount"), value: chartData.taken },
+        { name: t("missedCount"), value: chartData.missed },
       ]
     : [];
 
@@ -202,13 +201,13 @@ export default function Medication() {
                 <p className="text-3xl font-bold text-success-600">
                   {chartData.taken}
                 </p>
-                <p className="text-sm text-gray-600">Qabul qilindi</p>
+                <p className="text-sm text-gray-600">{t("takenCount")}</p>
               </div>
               <div className="bg-danger-50 rounded-xl p-3 text-center">
                 <p className="text-3xl font-bold text-danger-600">
                   {chartData.missed}
                 </p>
-                <p className="text-sm text-gray-600">Qoldirildi</p>
+                <p className="text-sm text-gray-600">{t("missedCount")}</p>
               </div>
             </div>
           </div>
@@ -268,7 +267,9 @@ export default function Medication() {
                   {adherence > 0 && (
                     <div className="mb-3">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm text-gray-600">Bugun:</span>
+                        <span className="text-sm text-gray-600">
+                          {t("todayProgress")}
+                        </span>
                         <span className="text-sm font-semibold text-gray-800">
                           {adherence.toFixed(0)}%
                         </span>
@@ -334,10 +335,10 @@ export default function Medication() {
                                 }`}
                               >
                                 {isTaken
-                                  ? "✓ Qabul qilindi"
+                                  ? `✓ ${t("statusTaken")}`
                                   : isPast
-                                  ? "✗ Qoldirildi"
-                                  : "Kutilmoqda"}
+                                  ? `✗ ${t("statusMissed")}`
+                                  : t("statusPending")}
                               </p>
                               {isTaken &&
                                 todayTaken.find((r) => r.time === time)
@@ -367,7 +368,7 @@ export default function Medication() {
                           >
                             {isTaken ? (
                               <span className="flex items-center gap-2">
-                                <FaCheck /> Bajarildi
+                                <FaCheck /> {t("completed")}
                               </span>
                             ) : (
                               t("taken")
@@ -387,16 +388,14 @@ export default function Medication() {
               <FaPills className="text-primary-600 text-5xl" />
             </div>
             <p className="text-xl font-semibold text-gray-800 mb-2">
-              Hozircha dorilar yo'q
+              {t("noMedications")}
             </p>
-            <p className="text-gray-600 mb-6">
-              Birinchi dorini qo'shish uchun pastdagi tugmani bosing
-            </p>
+            <p className="text-gray-600 mb-6">{t("addMedicationPrompt")}</p>
             <button
               onClick={() => setShowAddModal(true)}
               className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2"
             >
-              <FaPlus /> Dori qo'shish
+              <FaPlus /> {t("addMedication")}
             </button>
           </div>
         )}
@@ -418,7 +417,7 @@ export default function Medication() {
           <div className="bg-white rounded-3xl p-6 w-full max-w-md my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-gray-800">
-                Dori qo'shish
+                {t("addMedication")}
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -442,7 +441,7 @@ export default function Medication() {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  placeholder="Masalan: Metformin"
+                  placeholder={t("medicationExample")}
                   className="w-full px-4 py-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
@@ -458,7 +457,7 @@ export default function Medication() {
                   onChange={(e) =>
                     setFormData({ ...formData, dosage: e.target.value })
                   }
-                  placeholder="Masalan: 500mg"
+                  placeholder={t("dosageExample")}
                   className="w-full px-4 py-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
@@ -497,7 +496,7 @@ export default function Medication() {
                   onClick={handleAddTime}
                   className="mt-2 w-full py-3 border-2 border-dashed border-primary-300 text-primary-600 rounded-xl hover:bg-primary-50 transition-colors font-medium"
                 >
-                  + Yana vaqt qo'shish
+                  + {t("addAnotherTime")}
                 </button>
               </div>
 
@@ -521,10 +520,10 @@ export default function Medication() {
                 >
                   <div className="flex items-center gap-2">
                     <FaBell className="text-primary-600" />
-                    Eslatma berish
+                    {t("enableReminder")}
                   </div>
                   <p className="text-sm text-gray-500 mt-1">
-                    Dori ichish vaqtida bildirishnoma yuboriladi
+                    {t("reminderDescription")}
                   </p>
                 </label>
               </div>

@@ -9,8 +9,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content:
-        "Assalomu alaykum! Men sizning tibbiy yordamchi AI-man. Qaysi semptomlar sizni bezovta qilyapti? Men sizga yordam beraman, lekin esda tuting - bu faqat dastlabki maslahat. Aniq tashxis uchun shifokorga murojaat qiling.",
+      content: t("chatWelcome"),
     },
   ]);
   const [input, setInput] = useState("");
@@ -38,8 +37,7 @@ export default function Chat() {
         ...prev,
         {
           role: "assistant",
-          content:
-            "Kechirasiz, xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.",
+          content: t("chatError"),
         },
       ]);
     }
@@ -57,9 +55,9 @@ export default function Chat() {
       <div className="bg-purple-600 text-white p-6 rounded-b-3xl">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <FaRobot className="text-4xl" />
-          AI {t("chat")}
+          {t("aiChat")}
         </h1>
-        <p className="text-purple-100 mt-2">Tibbiy maslahat uchun</p>
+        <p className="text-purple-100 mt-2">{t("medicalConsultation")}</p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -122,7 +120,7 @@ export default function Chat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Semptomlaringizni yozing..."
+            placeholder={t("writeSymptoms")}
             rows="1"
             className="flex-1 px-4 py-3 text-lg border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
             style={{ minHeight: "50px", maxHeight: "120px" }}

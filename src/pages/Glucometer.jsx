@@ -115,7 +115,7 @@ export default function Glucometer() {
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-center text-gray-500 py-8">Ma'lumot yo'q</p>
+                <p className="text-center text-gray-500 py-8">{t("noData")}</p>
               )}
             </div>
 
@@ -153,8 +153,8 @@ export default function Glucometer() {
                       {record.value < 5.5
                         ? "Normal"
                         : record.value < 7
-                        ? "Yuqori"
-                        : "Xavfli"}
+                        ? t("mediumRisk")
+                        : t("highRisk")}
                     </span>
                   </div>
                 </div>

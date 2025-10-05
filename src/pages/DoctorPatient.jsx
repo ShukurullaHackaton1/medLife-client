@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useGetPatientDataQuery } from "../services/api";
 import {
   LineChart,
@@ -14,6 +15,7 @@ import {
 import { FaTint, FaRunning, FaPills, FaUtensils } from "react-icons/fa";
 
 export default function DoctorPatient() {
+  const { t } = useTranslation();
   const { userId } = useParams();
   const { data, isLoading, error } = useGetPatientDataQuery(userId);
 
@@ -22,7 +24,7 @@ export default function DoctorPatient() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-xl text-gray-600">Ma'lumotlar yuklanmoqda...</p>
+          <p className="text-xl text-gray-600">{t("loadingData")}</p>
         </div>
       </div>
     );
@@ -32,8 +34,10 @@ export default function DoctorPatient() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl p-8 max-w-md text-center">
-          <p className="text-2xl font-bold text-danger-600 mb-2">Xatolik</p>
-          <p className="text-gray-600">Bemor ma'lumotlarini yuklab bo'lmadi</p>
+          <p className="text-2xl font-bold text-danger-600 mb-2">
+            {t("error")}
+          </p>
+          <p className="text-gray-600">{t("cannotLoadPatientData")}</p>
         </div>
       </div>
     );
@@ -68,38 +72,40 @@ export default function DoctorPatient() {
     <div className="min-h-screen bg-gray-50 pb-8">
       {/* Header */}
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white p-6">
-        <h1 className="text-3xl font-bold mb-2">Bemor ma'lumotlari</h1>
-        <p className="text-primary-100">Doctor uchun diagnoz tizimi</p>
+        <h1 className="text-3xl font-bold mb-2">{t("patientData")}</h1>
+        <p className="text-primary-100">{t("doctorDiagnosisSystem")}</p>
       </div>
 
       {/* Patient Info */}
       <div className="p-4">
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-4">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Bemor haqida
+            {t("patientInfo")}
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-gray-600">Ism-familiya</p>
+              <p className="text-gray-600">{t("fullName")}</p>
               <p className="text-xl font-bold text-gray-800">
                 {patient.firstName} {patient.lastName}
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Yosh</p>
+              <p className="text-gray-600">{t("age")}</p>
               <p className="text-xl font-bold text-gray-800">{patient.age}</p>
             </div>
             <div>
-              <p className="text-gray-600">Jinsi</p>
+              <p className="text-gray-600">{t("gender")}</p>
               <p className="text-xl font-bold text-gray-800">
-                {patient.gender === "male" ? "Erkak" : "Ayol"}
+                {t(patient.gender)}
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Vazn / Bo'y</p>
+              <p className="text-gray-600">
+                {t("weight")} / {t("heightLabel")}
+              </p>
               <p className="text-xl font-bold text-gray-800">
-                {patient.weight}kg / {patient.heightCm}sm
+                {patient.weight}kg / {patient.heightCm}cm
               </p>
             </div>
             <div>
@@ -109,7 +115,7 @@ export default function DoctorPatient() {
               </p>
             </div>
             <div>
-              <p className="text-gray-600">Mintaqa</p>
+              <p className="text-gray-600">{t("region")}</p>
               <p className="text-xl font-bold text-gray-800">
                 {patient.region}
               </p>
@@ -119,7 +125,7 @@ export default function DoctorPatient() {
           {patient.hasDiabetes && (
             <div className="mt-4 p-4 bg-danger-50 rounded-xl border-2 border-danger-200">
               <p className="text-lg font-bold text-danger-700">
-                ⚠️ Qandli diabet kasalligi bor
+                ⚠️ {t("hasDiabetes")}
               </p>
             </div>
           )}
@@ -127,7 +133,7 @@ export default function DoctorPatient() {
           {patient.screeningResults && patient.screeningResults.length > 0 && (
             <div className="mt-4">
               <h3 className="text-lg font-bold text-gray-800 mb-3">
-                Skrining natijalari
+                {t("screeningResults")}
               </h3>
               <div className="space-y-2">
                 {patient.screeningResults.map((result, idx) => (
@@ -138,12 +144,14 @@ export default function DoctorPatient() {
                     <p className="text-sm text-gray-600">{result.doctorType}</p>
                     <span
                       className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${
-                        result.risk === "Yuqori"
+                        result.risk === "Yuqori" ||
+                        result.risk === "Жоқары" ||
+                        result.risk === "Высокий"
                           ? "bg-danger-100 text-danger-700"
                           : "bg-warning-100 text-warning-700"
                       }`}
                     >
-                      {result.risk} xavf
+                      {result.risk} {t("risk")}
                     </span>
                   </div>
                 ))}
@@ -160,7 +168,7 @@ export default function DoctorPatient() {
                 <FaTint className="text-danger-600 text-xl" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">O'rtacha glukoza</p>
+                <p className="text-gray-600 text-sm">{t("averageGlucose")}</p>
                 <p className="text-2xl font-bold text-danger-600">
                   {summary.averageGlucose}
                 </p>
@@ -174,7 +182,7 @@ export default function DoctorPatient() {
                 <FaRunning className="text-success-600 text-xl" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Jami masofa</p>
+                <p className="text-gray-600 text-sm">{t("totalDistance")}</p>
                 <p className="text-2xl font-bold text-success-600">
                   {summary.totalDistanceKm} km
                 </p>
@@ -188,7 +196,7 @@ export default function DoctorPatient() {
                 <FaPills className="text-primary-600 text-xl" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Dorilar soni</p>
+                <p className="text-gray-600 text-sm">{t("medicationCount")}</p>
                 <p className="text-2xl font-bold text-primary-600">
                   {summary.medicationCount}
                 </p>
@@ -202,7 +210,7 @@ export default function DoctorPatient() {
                 <FaUtensils className="text-warning-600 text-xl" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">O'rtacha kaloriya</p>
+                <p className="text-gray-600 text-sm">{t("averageCalories")}</p>
                 <p className="text-2xl font-bold text-warning-600">
                   {summary.averageCalories}
                 </p>
@@ -215,7 +223,7 @@ export default function DoctorPatient() {
         {glucoseChartData.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-md mb-4">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Glukoza dinamikasi
+              {t("glucoseDynamics")}
             </h2>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={glucoseChartData}>
@@ -238,7 +246,7 @@ export default function DoctorPatient() {
         {physicalChartData.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-md mb-4">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Jismoniy faollik
+              {t("physicalActivity")}
             </h2>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={physicalChartData}>
@@ -256,7 +264,7 @@ export default function DoctorPatient() {
         {medications.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-md mb-4">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Qabul qilayotgan dorilar
+              {t("currentMedications")}
             </h2>
             <div className="space-y-3">
               {medications.map((med) => (
@@ -285,7 +293,7 @@ export default function DoctorPatient() {
         {nutritionData.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-md">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              So'nggi ovqatlanish
+              {t("recentMeals")}
             </h2>
             <div className="space-y-3">
               {nutritionData.slice(0, 5).map((meal) => (
@@ -293,13 +301,7 @@ export default function DoctorPatient() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <p className="font-bold text-gray-800">
-                        {meal.mealType === "breakfast"
-                          ? "Nonushta"
-                          : meal.mealType === "lunch"
-                          ? "Tushlik"
-                          : meal.mealType === "dinner"
-                          ? "Kechki ovqat"
-                          : "Gazak"}
+                        {t(meal.mealType)}
                       </p>
                       <p className="text-sm text-gray-600">
                         {new Date(meal.date).toLocaleDateString()}
@@ -307,13 +309,13 @@ export default function DoctorPatient() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">
-                        Shakar:{" "}
+                        {t("sugar")}:{" "}
                         <span className="font-bold text-danger-600">
                           {meal.totalSugar}g
                         </span>
                       </p>
                       <p className="text-sm text-gray-600">
-                        Kaloriya:{" "}
+                        {t("calories")}:{" "}
                         <span className="font-bold text-warning-600">
                           {meal.totalCalories}
                         </span>
@@ -321,7 +323,7 @@ export default function DoctorPatient() {
                     </div>
                   </div>
                   <p className="text-xs text-gray-500">
-                    {meal.foods.length} ta ovqat
+                    {meal.foods.length} {t("foodItems")}
                   </p>
                 </div>
               ))}

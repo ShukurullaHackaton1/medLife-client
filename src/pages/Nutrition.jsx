@@ -56,7 +56,7 @@ export default function Nutrition() {
 
   const handleSave = async () => {
     if (foods.length === 0) {
-      alert("Kamida bitta ovqat qo'shing");
+      alert(t("addAnotherFood"));
       return;
     }
 
@@ -103,7 +103,7 @@ export default function Nutrition() {
         {foods.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-md mb-4">
             <h2 className="text-xl font-bold text-gray-800 mb-3">
-              Bugungi {t(mealType)}
+              {t("todayMeal")} {t(mealType)}
             </h2>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
@@ -111,13 +111,13 @@ export default function Nutrition() {
                 <p className="text-2xl font-bold text-danger-600">
                   {totalSugar.toFixed(1)}g
                 </p>
-                <p className="text-gray-600 text-sm">Shakar</p>
+                <p className="text-gray-600 text-sm">{t("sugar")}</p>
               </div>
               <div className="text-center p-3 bg-warning-50 rounded-xl">
                 <p className="text-2xl font-bold text-warning-600">
                   {totalCalories.toFixed(0)}
                 </p>
-                <p className="text-gray-600 text-sm">Kaloriya</p>
+                <p className="text-gray-600 text-sm">{t("calories")}</p>
               </div>
             </div>
 
@@ -138,10 +138,10 @@ export default function Nutrition() {
                         {food.foodName}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Shakar: {food.sugarContent}g
+                        {t("sugar")}: {food.sugarContent}g
                       </p>
                       <p className="text-sm text-gray-600">
-                        Kaloriya: {food.calories}
+                        {t("calories")}: {food.calories}
                       </p>
                       {food.feedback && (
                         <p className="text-sm text-gray-700 mt-2 p-2 bg-gray-50 rounded-lg">
@@ -160,8 +160,8 @@ export default function Nutrition() {
                         {food.status === "normal"
                           ? "Normal"
                           : food.status === "warning"
-                          ? "Ehtiyot"
-                          : "Xavfli"}
+                          ? t("mediumRisk")
+                          : t("highRisk")}
                       </span>
                     </div>
                     <button
@@ -198,10 +198,10 @@ export default function Nutrition() {
             )}
           </div>
           <p className="text-xl font-semibold text-gray-800">
-            {isAnalyzing ? "Tahlil qilinmoqda..." : "Ovqat rasmini oling"}
+            {isAnalyzing ? t("analyzing") : t("takeFoodPhoto")}
           </p>
           <p className="text-gray-600">
-            {foods.length > 0 ? "Yana ovqat qo'shish" : "Boshlash uchun bosing"}
+            {foods.length > 0 ? t("addAnotherFood") : t("clickToStart")}
           </p>
         </button>
 
@@ -217,7 +217,7 @@ export default function Nutrition() {
         {nutritionHistory && nutritionHistory.length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Bugungi ovqatlanish
+              {t("todayMeals")}
             </h2>
 
             <div className="space-y-3">
@@ -237,13 +237,13 @@ export default function Nutrition() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">
-                        Shakar:{" "}
+                        {t("sugar")}:{" "}
                         <span className="font-bold text-danger-600">
                           {meal.totalSugar}g
                         </span>
                       </p>
                       <p className="text-sm text-gray-600">
-                        Kaloriya:{" "}
+                        {t("calories")}:{" "}
                         <span className="font-bold text-warning-600">
                           {meal.totalCalories}
                         </span>
@@ -263,7 +263,7 @@ export default function Nutrition() {
                   </div>
                   {meal.foods.length > 4 && (
                     <p className="text-sm text-gray-500 mt-2 text-center">
-                      +{meal.foods.length - 4} ovqat
+                      +{meal.foods.length - 4} {t("foods")}
                     </p>
                   )}
                 </div>

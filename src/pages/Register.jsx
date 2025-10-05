@@ -142,7 +142,7 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 step="0.01"
-                placeholder="170 (sm) yoki 1.7 (m)"
+                placeholder={t("heightPlaceholder")}
                 className="w-full px-4 py-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>

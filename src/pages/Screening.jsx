@@ -68,11 +68,9 @@ export default function Screening() {
                   <FaCheckCircle className="text-success-600 text-6xl" />
                 </div>
                 <p className="text-xl text-success-600 mb-4 font-semibold">
-                  Sizda kasallik xavfi aniqlanmadi
+                  {t("noRiskFound")}
                 </p>
-                <p className="text-gray-600">
-                  Sog'lom turmush tarzini davom ettiring
-                </p>
+                <p className="text-gray-600">{t("continueHealthyLifestyle")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -80,7 +78,9 @@ export default function Screening() {
                   <div
                     key={index}
                     className={`p-4 rounded-2xl border-2 ${
-                      result.risk === "Yuqori"
+                      result.risk === "Yuqori" ||
+                      result.risk === "Жоқары" ||
+                      result.risk === "Высокий"
                         ? "bg-danger-50 border-danger-300"
                         : "bg-warning-50 border-warning-300"
                     }`}
@@ -88,7 +88,9 @@ export default function Screening() {
                     <div className="flex items-start gap-3 mb-3">
                       <FaExclamationTriangle
                         className={`text-2xl mt-1 ${
-                          result.risk === "Yuqori"
+                          result.risk === "Yuqori" ||
+                          result.risk === "Жоқары" ||
+                          result.risk === "Высокий"
                             ? "text-danger-600"
                             : "text-warning-600"
                         }`}
@@ -98,10 +100,10 @@ export default function Screening() {
                       </h3>
                     </div>
                     <p className="text-lg mb-2">
-                      <strong>Xavf darajasi:</strong> {result.risk}
+                      <strong>{t("riskLevel")}:</strong> {result.risk}
                     </p>
                     <p className="text-lg mb-2">
-                      <strong>Shifokor:</strong> {result.doctorType}
+                      <strong>{t("doctor")}:</strong> {result.doctorType}
                     </p>
                     <p className="text-gray-700">{result.recommendations}</p>
                   </div>
@@ -115,12 +117,9 @@ export default function Screening() {
                   <FaChartLine className="text-primary-600 text-2xl mt-1" />
                   <div>
                     <p className="text-lg font-semibold text-primary-900">
-                      Diabet kundaligi ochildi
+                      {t("diabetesDiaryOpened")}
                     </p>
-                    <p className="text-gray-700 mt-2">
-                      Endi siz glukometr, ovqatlanish va boshqa ma'lumotlarni
-                      kiritishingiz mumkin
-                    </p>
+                    <p className="text-gray-700 mt-2">{t("canEnterData")}</p>
                   </div>
                 </div>
               </div>
@@ -132,11 +131,10 @@ export default function Screening() {
                   <FaHeartbeat className="text-success-600 text-2xl mt-1" />
                   <div>
                     <p className="text-lg font-semibold text-success-900">
-                      Sog'ligingizni saqlang
+                      {t("keepHealthy")}
                     </p>
                     <p className="text-gray-700 mt-2">
-                      AI chat orqali tibbiy maslahat olishingiz va oila
-                      a'zolaringizni kuzatishingiz mumkin
+                      {t("canUseAIChatAndFamily")}
                     </p>
                   </div>
                 </div>

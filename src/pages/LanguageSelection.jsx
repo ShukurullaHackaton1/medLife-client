@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 export default function LanguageSelection() {
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const languages = [
     { code: "uz", name: "O'zbekcha", flag: "🇺🇿" },
@@ -22,10 +22,10 @@ export default function LanguageSelection() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary-900 mb-2">
-            Diabetes Management
+            {t("appTitle")}
           </h1>
           <p className="text-lg text-primary-700">
-            Tilni tanlang / Выберите язык / Тилди таңлаң
+            {t("selectLanguagePrompt")}
           </p>
         </div>
 

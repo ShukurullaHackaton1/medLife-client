@@ -27,13 +27,13 @@ export default function Home() {
     {
       path: "/chat",
       icon: FaComments,
-      label: "AI Chat",
+      label: t("aiChat"),
       color: "bg-purple-500",
     },
     {
       path: "/family",
       icon: FaUsers,
-      label: "Oila",
+      label: t("family"),
       color: "bg-pink-500",
     },
   ];
@@ -42,25 +42,25 @@ export default function Home() {
     {
       path: "/glucometer",
       icon: FaTint,
-      label: "Glukometr",
+      label: t("glucometer"),
       color: "bg-danger-500",
     },
     {
       path: "/physical",
       icon: FaRunning,
-      label: "Jismoniy faollik",
+      label: t("physical"),
       color: "bg-success-500",
     },
     {
       path: "/medication",
       icon: FaPills,
-      label: "Dorilar",
+      label: t("medication"),
       color: "bg-primary-500",
     },
     {
       path: "/nutrition",
       icon: FaUtensils,
-      label: "Ovqatlanish",
+      label: t("nutrition"),
       color: "bg-warning-500",
     },
   ];
@@ -74,7 +74,7 @@ export default function Home() {
       <div className="bg-gradient-to-br from-primary-600 to-primary-800 text-white p-6 rounded-b-3xl">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-3xl font-bold mb-1">Xush kelibsiz</h1>
+            <h1 className="text-3xl font-bold mb-1">{t("welcome")}</h1>
             <p className="text-xl opacity-90">
               {profile?.firstName} {profile?.lastName}
             </p>
@@ -95,10 +95,8 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <FaChartLine className="text-2xl" />
               <div>
-                <p className="text-lg font-semibold">Diabet kundaligi</p>
-                <p className="text-sm opacity-90 mt-1">
-                  Kunlik ma'lumotlaringizni kuzatib boring
-                </p>
+                <p className="text-lg font-semibold">{t("diabetesDiary")}</p>
+                <p className="text-sm opacity-90 mt-1">{t("trackDailyData")}</p>
               </div>
             </div>
           </div>
@@ -107,9 +105,9 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <FaHeartbeat className="text-2xl" />
               <div>
-                <p className="text-lg font-semibold">Sog'lom turmush tarzi</p>
+                <p className="text-lg font-semibold">{t("healthyLifestyle")}</p>
                 <p className="text-sm opacity-90 mt-1">
-                  AI chat orqali tibbiy maslahat oling va oilangizni kuzating
+                  {t("getAIConsultation")}
                 </p>
               </div>
             </div>
@@ -118,7 +116,9 @@ export default function Home() {
       </div>
 
       <div className="p-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Tezkor kirish</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          {t("quickAccess")}
+        </h2>
 
         <div
           className={`grid ${
@@ -160,23 +160,23 @@ export default function Home() {
           <div className="mt-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
             <h3 className="text-xl font-bold text-blue-900 mb-3 flex items-center gap-2">
               <FaHeartbeat className="text-2xl" />
-              Sog'ligingizni kuzatib boring
+              {t("trackYourHealth")}
             </h3>
-            <p className="text-gray-700 mb-4">
-              AI chat orqali semptomlaringiz haqida savol bering va professional
-              maslahat oling. Oila a'zolaringizni qo'shib, ularning sog'lig'ini
-              ham kuzatishingiz mumkin.
-            </p>
+            <p className="text-gray-700 mb-4">{t("askAboutSymptoms")}</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-white rounded-xl p-4 text-center">
                 <FaRobot className="text-4xl text-purple-600 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-gray-800">AI Chat</p>
-                <p className="text-xs text-gray-600">Tibbiy maslahat</p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {t("aiChat")}
+                </p>
+                <p className="text-xs text-gray-600">{t("medicalAdvice")}</p>
               </div>
               <div className="bg-white rounded-xl p-4 text-center">
                 <FaUserFriends className="text-4xl text-pink-600 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-gray-800">Oila</p>
-                <p className="text-xs text-gray-600">Kuzatuv tizimi</p>
+                <p className="text-sm font-semibold text-gray-800">
+                  {t("family")}
+                </p>
+                <p className="text-xs text-gray-600">{t("monitoringSystem")}</p>
               </div>
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function Home() {
         {profile?.screeningResults && profile.screeningResults.length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Skrining natijalari
+              {t("screeningResults")}
             </h2>
 
             <div className="space-y-3">
@@ -197,12 +197,14 @@ export default function Home() {
                   <p className="text-gray-600">{result.doctorType}</p>
                   <span
                     className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-medium ${
-                      result.risk === "Yuqori"
+                      result.risk === "Yuqori" ||
+                      result.risk === "Жоқары" ||
+                      result.risk === "Высокий"
                         ? "bg-danger-100 text-danger-700"
                         : "bg-warning-100 text-warning-700"
                     }`}
                   >
-                    {result.risk} xavf
+                    {result.risk} {t("risk")}
                   </span>
                 </div>
               ))}
