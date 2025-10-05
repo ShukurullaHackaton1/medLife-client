@@ -78,7 +78,7 @@ export default function Profile() {
   };
 
   const handleLogout = () => {
-    if (confirm("Chiqishni xohlaysizmi?")) {
+    if (confirm(t("confirmLogout"))) {
       dispatch(logout());
       navigate("/login");
     }
@@ -98,7 +98,7 @@ export default function Profile() {
         );
         setShowQRModal(true);
       } catch (error) {
-        alert("QR kod yaratishda xatolik");
+        alert(t("error"));
       }
     }
   };
@@ -122,8 +122,8 @@ export default function Profile() {
               {profile?.firstName} {profile?.lastName}
             </h1>
             <p className="text-primary-100">
-              {profile?.age} yosh •{" "}
-              {profile?.gender === "male" ? "Erkak" : "Ayol"}
+              {profile?.age} {t("yearsOld")} •{" "}
+              {profile?.gender === "male" ? t("male") : t("female")}
             </p>
           </div>
 
@@ -143,11 +143,11 @@ export default function Profile() {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center">
             <p className="text-2xl font-bold">{profile?.weight}</p>
-            <p className="text-sm text-primary-100">kg</p>
+            <p className="text-sm text-primary-100">{t("weight")}</p>
           </div>
           <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center">
             <p className="text-2xl font-bold">{profile?.heightCm}</p>
-            <p className="text-sm text-primary-100">sm</p>
+            <p className="text-sm text-primary-100">{t("heightLabel")}</p>
           </div>
           <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center">
             <p className="text-2xl font-bold">
@@ -170,7 +170,7 @@ export default function Profile() {
               <FaEdit className="text-primary-600 text-xl" />
             </div>
             <span className="text-lg font-semibold text-gray-800">
-              Profilni tahrirlash
+              {t("editProfile")}
             </span>
           </div>
         </button>
@@ -184,7 +184,7 @@ export default function Profile() {
               <FaGlobe className="text-success-600 text-xl" />
             </div>
             <span className="text-lg font-semibold text-gray-800">
-              Tilni o'zgartirish
+              {t("changeLanguage")}
             </span>
           </div>
           <span className="text-gray-600">
@@ -205,7 +205,7 @@ export default function Profile() {
               <FaQrcode className="text-warning-600 text-xl" />
             </div>
             <span className="text-lg font-semibold text-gray-800">
-              Doctor uchun QR kod
+              {t("doctorQRCode")}
             </span>
           </div>
         </button>
@@ -227,20 +227,19 @@ export default function Profile() {
         {profile?.hasDiabetes && (
           <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-4 border-2 border-primary-200">
             <p className="text-lg font-bold text-primary-900 mb-2">
-              📊 Diabet kundaligi faol
+              📊 {t("diabetesDiaryActive")}
             </p>
-            <p className="text-gray-700">
-              Siz barcha funktsiyalardan foydalanishingiz mumkin
-            </p>
+            <p className="text-gray-700">{t("canUseAllFeatures")}</p>
           </div>
         )}
       </div>
 
+      {/* Edit Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Profilni tahrirlash
+              {t("editProfile")}
             </h2>
 
             <form onSubmit={handleUpdate} className="space-y-4">
@@ -342,11 +341,12 @@ export default function Profile() {
         </div>
       )}
 
+      {/* Language Modal */}
       {showLanguageModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Tilni tanlang
+              {t("selectLanguage")}
             </h2>
 
             <div className="space-y-3">
@@ -395,12 +395,13 @@ export default function Profile() {
               onClick={() => setShowLanguageModal(false)}
               className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 text-lg font-semibold py-3 rounded-xl transition-colors"
             >
-              Yopish
+              {t("close")}
             </button>
           </div>
         </div>
       )}
 
+      {/* Notifications Modal */}
       {showNotifications && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -435,7 +436,7 @@ export default function Profile() {
               </div>
             ) : (
               <p className="text-center text-gray-500 py-8">
-                Bildirishnomalar yo'q
+                {t("noNotifications")}
               </p>
             )}
 
@@ -443,17 +444,18 @@ export default function Profile() {
               onClick={() => setShowNotifications(false)}
               className="w-full mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 text-lg font-semibold py-3 rounded-xl transition-colors"
             >
-              Yopish
+              {t("close")}
             </button>
           </div>
         </div>
       )}
 
+      {/* QR Modal */}
       {showQRModal && qrCode && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-              Doctor uchun QR kod
+              {t("doctorQRCode")}
             </h2>
 
             <div className="bg-white p-4 rounded-2xl border-2 border-gray-200 mb-4">
@@ -465,14 +467,14 @@ export default function Profile() {
             </div>
 
             <p className="text-center text-gray-600 mb-4">
-              Bu QR kodni shifokorga ko'rsating
+              {t("showToDoctor")}
             </p>
 
             <button
               onClick={() => setShowQRModal(false)}
               className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 text-lg font-semibold py-3 rounded-xl transition-colors"
             >
-              Yopish
+              {t("close")}
             </button>
           </div>
         </div>
