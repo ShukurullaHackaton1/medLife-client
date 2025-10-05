@@ -1,4 +1,3 @@
-// src/pages/Nutrition.jsx - Yangilangan versiya
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -7,7 +6,7 @@ import {
   useGetNutritionQuery,
 } from "../services/api";
 import Navbar from "../components/Navbar";
-import { FaCamera, FaPlus, FaTrash, FaCheck, FaImage } from "react-icons/fa";
+import { FaCamera, FaTrash, FaCheck, FaImage, FaTimes } from "react-icons/fa";
 
 export default function Nutrition() {
   const { t } = useTranslation();
@@ -15,8 +14,11 @@ export default function Nutrition() {
   const [foods, setFoods] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showCameraOptions, setShowCameraOptions] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [stream, setStream] = useState(null);
   const fileInputRef = useRef(null);
-  const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const { data: nutritionHistory } = useGetNutritionQuery({
     period: "daily",
@@ -26,32 +28,97 @@ export default function Nutrition() {
   const [analyzeFood] = useAnalyzeFoodMutation();
   const [saveNutrition, { isLoading: isSaving }] = useSaveNutritionMutation();
 
-  const handleImageCapture = async (e) => {
+  // Kamerani ochish
+  const openCamera = async () => {
+    setShowCameraOptions(false);
+    setShowCamera(true);
+
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }, // Orqa kamera
+        audio: false,
+      });
+
+      setStream(mediaStream);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        videoRef.current.play();
+      }
+    } catch (error) {
+      console.error("Kamera ochilmadi:", error);
+      alert("Kameraga ruxsat bermadingiz yoki kamera ishlamayapti");
+      setShowCamera(false);
+    }
+  };
+
+  // Rasm olish
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+
+    // Canvas o'lchamini videoga moslash
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Rasmni chizish
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Base64 ga o'girish
+    const imageData = canvas.toDataURL("image/jpeg", 0.8);
+
+    // Kamerani yopish
+    closeCamera();
+
+    // Tahlil qilish
+    analyzeImage(imageData);
+  };
+
+  // Kamerani yopish
+  const closeCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+    setShowCamera(false);
+  };
+
+  // Galereyadan tanlash
+  const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setIsAnalyzing(true);
     setShowCameraOptions(false);
 
     const reader = new FileReader();
-    reader.onloadend = async () => {
-      try {
-        const result = await analyzeFood({ image: reader.result }).unwrap();
-
-        setFoods([
-          ...foods,
-          {
-            image: reader.result,
-            ...result,
-          },
-        ]);
-      } catch (error) {
-        alert(error.data?.message || t("error"));
-      } finally {
-        setIsAnalyzing(false);
-      }
+    reader.onloadend = () => {
+      analyzeImage(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  // Rasmni tahlil qilish
+  const analyzeImage = async (imageData) => {
+    setIsAnalyzing(true);
+
+    try {
+      const result = await analyzeFood({ image: imageData }).unwrap();
+
+      setFoods([
+        ...foods,
+        {
+          image: imageData,
+          ...result,
+        },
+      ]);
+    } catch (error) {
+      alert(error.data?.message || t("error"));
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleRemoveFood = (index) => {
@@ -189,40 +256,80 @@ export default function Nutrition() {
           </div>
         )}
 
-        {/* Camera Options */}
+        {/* Camera View - Full Screen */}
+        {showCamera && (
+          <div className="fixed inset-0 bg-black z-50 flex flex-col">
+            <div className="flex-1 relative">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover"
+              />
+              <canvas ref={canvasRef} className="hidden" />
+
+              {/* Close button */}
+              <button
+                onClick={closeCamera}
+                className="absolute top-6 right-6 bg-white/20 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              >
+                <FaTimes className="text-2xl" />
+              </button>
+
+              {/* Guide overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="border-4 border-white/50 rounded-2xl w-64 h-64"></div>
+              </div>
+            </div>
+
+            {/* Capture button */}
+            <div className="p-8 bg-gradient-to-t from-black/80 to-transparent">
+              <button
+                onClick={capturePhoto}
+                className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-xl"
+              >
+                <div className="w-16 h-16 bg-white border-4 border-gray-300 rounded-full"></div>
+              </button>
+              <p className="text-white text-center mt-4 text-lg">
+                Ovqatni ramka ichiga joylashtiring
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Options Modal */}
         {showCameraOptions && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-3xl p-6 w-full max-w-md">
               <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-                Выберите источник
+                Tanlang
               </h2>
 
               <div className="space-y-3">
                 <button
-                  onClick={() => {
-                    cameraInputRef.current?.click();
-                  }}
+                  onClick={openCamera}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
                 >
                   <FaCamera className="text-2xl" />
-                  Сделать фото
+                  Rasmga olish
                 </button>
 
                 <button
                   onClick={() => {
+                    setShowCameraOptions(false);
                     fileInputRef.current?.click();
                   }}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white text-lg font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
                 >
                   <FaImage className="text-2xl" />
-                  Выбрать из галереи
+                  Galereyadan tanlash
                 </button>
 
                 <button
                   onClick={() => setShowCameraOptions(false)}
                   className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 text-lg font-semibold py-4 rounded-xl transition-colors"
                 >
-                  Отмена
+                  {t("cancel")}
                 </button>
               </div>
             </div>
@@ -249,25 +356,16 @@ export default function Nutrition() {
           </p>
         </button>
 
-        {/* Hidden inputs */}
-        <input
-          ref={cameraInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleImageCapture}
-          className="hidden"
-        />
-
+        {/* Hidden file input */}
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          onChange={handleImageCapture}
+          onChange={handleFileSelect}
           className="hidden"
         />
 
-        {/* Existing nutrition history code... */}
+        {/* Nutrition History */}
         {nutritionHistory && nutritionHistory.length > 0 && (
           <div className="mt-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
