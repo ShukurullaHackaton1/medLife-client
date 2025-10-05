@@ -36,7 +36,6 @@ export default function LanguageSelection() {
               onClick={() => handleLanguageSelect(lang.code)}
               className="w-full bg-white hover:bg-primary-50 rounded-2xl p-6 shadow-lg transition-all transform hover:scale-105 flex items-center justify-between"
             >
-              <span className="text-5xl">{lang.flag}</span>
               <span className="text-2xl font-semibold text-gray-800">
                 {lang.name}
               </span>
